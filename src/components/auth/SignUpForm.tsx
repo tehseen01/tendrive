@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -5,10 +7,10 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { SignUpSchemaType, signUpSchema } from "@/lib/validation/signupSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
-import { ID, account } from "@/appwrite/config";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
 import Icon from "../Icon";
+import authService from "@/appwrite/auth";
 
 const SignUpForm = () => {
   const { toast } = useToast();
@@ -23,8 +25,7 @@ const SignUpForm = () => {
 
   const signUpSubmitHandler: SubmitHandler<SignUpSchemaType> = async (data) => {
     try {
-      const { name, email, password } = data;
-      await account.create(ID.unique(), email, password, name);
+      await authService.createAccount(data);
       router.push("/");
       reset();
     } catch (error: any) {
