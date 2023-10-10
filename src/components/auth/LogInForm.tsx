@@ -8,9 +8,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LogInSchemaType, logInSchema } from "@/lib/validation/loginSchema";
 import { useToast } from "../ui/use-toast";
-import { account } from "@/appwrite/config";
 import { useRouter } from "next/navigation";
 import Icon from "../Icon";
+import authService from "@/appwrite/auth";
 
 const LogInForm = () => {
   const { toast } = useToast();
@@ -25,9 +25,8 @@ const LogInForm = () => {
 
   const logInSubmitHandler: SubmitHandler<LogInSchemaType> = async (data) => {
     try {
-      const { email, password } = data;
-      const user = await account.createEmailSession(email, password);
-      console.log(user);
+      await authService.logIn(data);
+      reset();
       router.push("/");
     } catch (error: any) {
       console.log(error);
