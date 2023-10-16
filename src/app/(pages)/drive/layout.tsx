@@ -1,6 +1,9 @@
+"use client";
+
 import Icon from "@/components/Icon";
 import NewDropdown from "@/components/NewDropdown";
 import Sidebar from "@/components/Sidebar";
+import WithAuth from "@/components/WithAuth";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -34,4 +37,4 @@ const DriveLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default DriveLayout;
+export default WithAuth(DriveLayout);
