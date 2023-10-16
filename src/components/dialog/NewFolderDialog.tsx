@@ -14,6 +14,7 @@ import { useToast } from "../ui/use-toast";
 import folderService from "@/appwrite/folderService";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { appendFolder } from "@/redux/folderSlice";
+import { useParams } from "next/navigation";
 
 type TInput = {
   folder: string;
@@ -27,6 +28,8 @@ type TNewFolderDialogProp = {
 const NewFolderDialog = ({ type, setOpen }: TNewFolderDialogProp) => {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
+  const params = useParams();
+  const { folderId } = params;
 
   const { user } = useAppSelector((state) => state.user);
   const {
@@ -43,7 +46,7 @@ const NewFolderDialog = ({ type, setOpen }: TNewFolderDialogProp) => {
         const newFolder = await folderService.createNewFolder({
           name: data.folder,
           userId: user?.$id,
-          parentId: null,
+          parentId: folderId ? (folderId as string) : null,
         });
         reset();
         if (newFolder) {

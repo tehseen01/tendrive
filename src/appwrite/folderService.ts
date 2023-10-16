@@ -41,6 +41,18 @@ class FolderService {
       throw error;
     }
   }
+
+  async getChildFolder({ parentId }: { parentId: string }) {
+    try {
+      return await this.database.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteFolderCollectionId,
+        [Query.equal("parentId", parentId)]
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 const folderService = new FolderService();

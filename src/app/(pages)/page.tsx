@@ -1,7 +1,10 @@
+"use client";
+
+import WithAuth from "@/components/WithAuth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function Home() {
+function Home() {
   return (
     <>
       <main className="xl:px-20 lg:px-8 px-4 sm:h-[calc(100vh_-_80px)] h-[calc(100dvh_-_80px)] flex items-center justify-center">
@@ -29,3 +32,5 @@ export default function Home() {
     </>
   );
 }
+
+export default WithAuth(Home);
