@@ -12,9 +12,12 @@ import {
 import Icon from "./Icon";
 import NewFolderDialog from "./dialog/NewFolderDialog";
 import { Dialog, DialogTrigger } from "./ui/dialog";
+import UploadFileFolderDialog from "./dialog/UploadFileFolderDialog";
 
 const NewDropdown = ({ children }: { children: React.ReactNode }) => {
-  const [type, setType] = useState<"folder" | "file">("folder");
+  const [dialogType, setDialogType] = useState<"folder" | "file" | "upload">(
+    "folder"
+  );
   const [open, setOpen] = useState(false);
 
   return (
@@ -23,7 +26,7 @@ const NewDropdown = ({ children }: { children: React.ReactNode }) => {
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
         <DropdownMenuContent className="w-60">
           <DropdownMenuGroup>
-            <DialogTrigger asChild onClick={() => setType("folder")}>
+            <DialogTrigger asChild onClick={() => setDialogType("folder")}>
               <DropdownMenuItem>
                 <div className="flex">
                   <Icon name="folder-plus" className="mr-3 h-4 w-4" />
@@ -34,7 +37,7 @@ const NewDropdown = ({ children }: { children: React.ReactNode }) => {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DialogTrigger asChild onClick={() => setType("file")}>
+            <DialogTrigger asChild onClick={() => setDialogType("file")}>
               <DropdownMenuItem>
                 <div className="flex">
                   <Icon name="folder-plus" className="mr-3 h-4 w-4" />
@@ -42,10 +45,12 @@ const NewDropdown = ({ children }: { children: React.ReactNode }) => {
                 </div>
               </DropdownMenuItem>
             </DialogTrigger>
-            <DropdownMenuItem>
-              <Icon name="file-up" className="mr-3 h-4 w-4" />
-              <span>Upload File</span>
-            </DropdownMenuItem>
+            <DialogTrigger asChild onClick={() => setDialogType("upload")}>
+              <DropdownMenuItem>
+                <Icon name="file-up" className="mr-3 h-4 w-4" />
+                <span>Upload File</span>
+              </DropdownMenuItem>
+            </DialogTrigger>
             <DropdownMenuItem>
               <Icon name="folder-up" className="mr-3 h-4 w-4" />
               <span>Upload Folder</span>
@@ -53,7 +58,11 @@ const NewDropdown = ({ children }: { children: React.ReactNode }) => {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <NewFolderDialog type={type} setOpen={setOpen} />
+      {dialogType === "folder" ? (
+        <NewFolderDialog setOpen={setOpen} />
+      ) : dialogType === "upload" ? (
+        <UploadFileFolderDialog setOpen={setOpen} />
+      ) : null}
     </Dialog>
   );
 };

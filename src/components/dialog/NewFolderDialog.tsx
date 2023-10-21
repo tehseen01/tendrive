@@ -21,11 +21,10 @@ type TInput = {
 };
 
 type TNewFolderDialogProp = {
-  type: "folder" | "file";
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const NewFolderDialog = ({ type, setOpen }: TNewFolderDialogProp) => {
+const NewFolderDialog = ({ setOpen }: TNewFolderDialogProp) => {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
   const params = useParams();
@@ -41,7 +40,6 @@ const NewFolderDialog = ({ type, setOpen }: TNewFolderDialogProp) => {
 
   const handleFolderSubmit: SubmitHandler<TInput> = async (data) => {
     try {
-      console.log(data);
       if (user) {
         const newFolder = await folderService.createNewFolder({
           name: data.folder,

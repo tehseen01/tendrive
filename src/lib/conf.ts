@@ -9,6 +9,9 @@ const conf = {
   appwriteFolderCollectionId: String(
     process.env.NEXT_PUBLIC_APPWRITE_FOLDER_COLLECTION_ID
   ),
+  appwriteFileCollectionId: String(
+    process.env.NEXT_PUBLIC_APPWRITE_FILE_COLLECTION_ID
+  ),
 };
 
 export default conf;

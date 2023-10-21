@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import Icon from "./Icon";
 import NewDropdown from "./NewDropdown";
 import Logout from "./dialog/Logout";
+import Link from "next/link";
 
 const Sidebar = () => {
   return (
@@ -19,10 +20,16 @@ const Sidebar = () => {
       </div>
       <ul className="mt-4">
         {Links.map((link) => (
-          <li key={link.value} className="w-full">
-            <Button variant={"ghost"} className="w-full justify-start gap-4">
-              <span>{link.icon}</span>
-              {link.label}
+          <li key={link.label} className="w-full">
+            <Button
+              variant={"ghost"}
+              className="w-full justify-start gap-4"
+              asChild
+            >
+              <Link href={`/drive/${link.value}`}>
+                <span>{link.icon}</span>
+                {link.label}
+              </Link>
             </Button>
           </li>
         ))}
@@ -46,7 +53,7 @@ export default Sidebar;
 const Links = [
   {
     label: "My Drive",
-    value: "my-drive",
+    value: "",
     icon: <Icon name="folder" strokeWidth={1.25} />,
   },
   {
@@ -71,7 +78,7 @@ const Links = [
   },
   {
     label: "Bin",
-    value: "bin",
+    value: "trash",
     icon: <Icon name="trash" strokeWidth={1.25} />,
   },
   {
