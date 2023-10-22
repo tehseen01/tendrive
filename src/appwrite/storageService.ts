@@ -41,6 +41,22 @@ class StorageService {
     const preview = this.storage.getFilePreview(conf.appwriteBucketId, fileId);
     return preview;
   }
+
+  async updateFile({ fileId, name }: { fileId: string; name: string }) {
+    try {
+      return await this.storage.updateFile(conf.appwriteBucketId, fileId, name);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteFile({ fileId }: { fileId: string }) {
+    try {
+      return await this.storage.deleteFile(conf.appwriteBucketId, fileId);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 const storageService = new StorageService();

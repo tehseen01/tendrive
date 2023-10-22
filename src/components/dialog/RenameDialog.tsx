@@ -11,11 +11,13 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { TFolder } from "@/lib/types";
-import folderService from "@/appwrite/folderService";
 import { useToast } from "../ui/use-toast";
 import { useAppDispatch } from "@/hooks/hooks";
 import { updateFolder } from "@/redux/folderSlice";
 import conf from "@/lib/conf";
+import service from "@/appwrite/services";
+import storageService from "@/appwrite/storageService";
+import { updateFileInfo } from "@/redux/fileSlice";
 
 type TFormState = {
   rename: string;
@@ -39,17 +41,35 @@ const RenameDialog = ({ renameData, setOpen }: TRenameDialogProp) => {
   const handleRenameSubmit: SubmitHandler<TFormState> = async ({ rename }) => {
     try {
       if (renameData.$collectionId === conf.appwriteFolderCollectionId) {
-        const renamedItem = await folderService.renameFolder({
-          id: renameData.$id,
+        const renamedFolder = await service.renameDoc({
+          docId: renameData.$id,
           name: rename,
+          collectionId: conf.appwriteFolderCollectionId,
         });
 
-        if (renamedItem) {
-          setOpen(false);
-          toast({ description: "Renamed successfully", variant: "default" });
-          dispatch(updateFolder(renamedItem));
+        if (renamedFolder) {
+          dispatch(updateFolder(renamedFolder));
+        }
+      } else if (renameData.$collectionId === conf.appwriteFileCollectionId) {
+        const renamedFile = await service.renameDoc({
+          docId: renameData.$id,
+          name: rename,
+          collectionId: conf.appwriteFileCollectionId,
+        });
+
+        if (renamedFile) {
+          const renamedFileData = await storageService.updateFile({
+            fileId: renamedFile.$id,
+            name: renamedFile.name,
+          });
+          if (renamedFileData) dispatch(updateFileInfo(renamedFileData));
         }
       }
+      setOpen(false);
+      toast({
+        description: "Renamed successfully",
+        variant: "default",
+      });
     } catch (error: any) {
       toast({ description: error.message, variant: "destructive" });
       console.log(error);

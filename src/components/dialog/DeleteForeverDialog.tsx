@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   DialogContent,
@@ -9,10 +11,12 @@ import {
 import { Button } from "../ui/button";
 import { TFolder } from "@/lib/types";
 import conf from "@/lib/conf";
-import folderService from "@/appwrite/folderService";
 import { useToast } from "../ui/use-toast";
 import { useAppDispatch } from "@/hooks/hooks";
 import { removeFolderFromBin } from "@/redux/folderSlice";
+import service from "@/appwrite/services";
+import storageService from "@/appwrite/storageService";
+import { removeFileFromBin } from "@/redux/fileSlice";
 
 type DeleteForeverDialogProp = {
   deleteData: TFolder;
@@ -29,15 +33,24 @@ const DeleteForeverDialog = ({
   const handleDeleteForever = async () => {
     try {
       if (deleteData.$collectionId === conf.appwriteFolderCollectionId) {
-        await folderService.deleteFolderForever({
-          folderId: deleteData.$id,
+        await service.deleteDocForever({
+          docId: deleteData.$id,
+          collectionId: conf.appwriteFolderCollectionId,
         });
         dispatch(removeFolderFromBin(deleteData));
-        toast({
-          description: "Folder deleted forever",
-          variant: "default",
+      } else if (deleteData.$collectionId === conf.appwriteFileCollectionId) {
+        await service.deleteDocForever({
+          docId: deleteData.$id,
+          collectionId: conf.appwriteFileCollectionId,
         });
+        await storageService.deleteFile({ fileId: deleteData.$id });
+        dispatch(removeFileFromBin(deleteData));
       }
+
+      toast({
+        description: "Document deleted forever",
+        variant: "default",
+      });
       setOpen(false);
     } catch (error: any) {
       toast({ description: error.message, variant: "destructive" });

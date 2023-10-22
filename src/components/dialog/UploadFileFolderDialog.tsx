@@ -5,12 +5,13 @@ import { DialogContent, DialogFooter } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import storageService from "@/appwrite/storageService";
-import fileService from "@/appwrite/fileService";
 import { useParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { useToast } from "../ui/use-toast";
 import Icon from "../Icon";
 import { appendFile } from "@/redux/fileSlice";
+import service from "@/appwrite/services";
+import conf from "@/lib/conf";
 
 type UploadFileFolderProp = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,12 +33,12 @@ const UploadFileFolderDialog = ({ setOpen }: UploadFileFolderProp) => {
       if (user) {
         const bucketFile = await storageService.uploadFile({ file });
         if (bucketFile) {
-          const uploadedFile = await fileService.createFile({
-            fileId: bucketFile.$id,
+          const uploadedFile = await service.createDoc({
+            docId: bucketFile.$id,
             name: bucketFile.name,
             userId: user?.$id,
             parentId: folderId ? (folderId as string) : null,
-            isDeleted: false,
+            collectionId: conf.appwriteFileCollectionId,
           });
 
           dispatch(appendFile(uploadedFile));

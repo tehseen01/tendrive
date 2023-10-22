@@ -11,10 +11,12 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useToast } from "../ui/use-toast";
-import folderService from "@/appwrite/folderService";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { appendFolder } from "@/redux/folderSlice";
 import { useParams } from "next/navigation";
+import service from "@/appwrite/services";
+import { ID } from "appwrite";
+import conf from "@/lib/conf";
 
 type TInput = {
   folder: string;
@@ -41,10 +43,12 @@ const NewFolderDialog = ({ setOpen }: TNewFolderDialogProp) => {
   const handleFolderSubmit: SubmitHandler<TInput> = async (data) => {
     try {
       if (user) {
-        const newFolder = await folderService.createNewFolder({
+        const newFolder = await service.createDoc({
           name: data.folder,
           userId: user?.$id,
           parentId: folderId ? (folderId as string) : null,
+          docId: ID.unique(),
+          collectionId: conf.appwriteFolderCollectionId,
         });
         reset();
         if (newFolder) {
