@@ -33,6 +33,14 @@ export type TCreateFile = {
   isDeleted: Boolean;
 };
 
+export type TCreateDoc = {
+  docId: string;
+  name: string;
+  userId: string;
+  parentId: string | null;
+  collectionId: string;
+};
+
 export type TFolder = {
   $id: string;
   name: string;

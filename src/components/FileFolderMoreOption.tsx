@@ -10,19 +10,20 @@ import {
 } from "./ui/dropdown-menu";
 import Icon from "./Icon";
 import RenameDialog from "./dialog/RenameDialog";
-import { BinType, TFolder } from "@/lib/types";
+import { BinType, TFile, TFolder } from "@/lib/types";
 import { useToast } from "./ui/use-toast";
 import conf from "@/lib/conf";
-import folderService from "@/appwrite/folderService";
 import { usePathname } from "next/navigation";
 import { useAppDispatch } from "@/hooks/hooks";
 import { addFolderToBin, removeFolderFromBin } from "@/redux/folderSlice";
 import DeleteForeverDialog from "./dialog/DeleteForeverDialog";
+import service from "@/appwrite/services";
+import { addFileToBin, removeFileFromBin } from "@/redux/fileSlice";
 
 const FileFolderMoreOption = ({
   fileOrFolderData,
 }: {
-  fileOrFolderData: TFolder;
+  fileOrFolderData: TFolder | TFile;
 }) => {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -34,12 +35,23 @@ const FileFolderMoreOption = ({
   const handleMoveToBin = async (data: TFolder) => {
     try {
       if (data.$collectionId === conf.appwriteFolderCollectionId) {
-        const deletedFolder = await folderService.moveToBinFolder({
-          folderId: data.$id,
+        const deletedFolder = await service.moveToBinDoc({
+          docId: data.$id,
+          collectionId: conf.appwriteFolderCollectionId,
         });
         dispatch(addFolderToBin(deletedFolder));
         toast({
           description: "folder deleted successfully",
+          variant: "default",
+        });
+      } else if (data.$collectionId === conf.appwriteFileCollectionId) {
+        const deletedFile = await service.moveToBinDoc({
+          docId: data.$id,
+          collectionId: conf.appwriteFileCollectionId,
+        });
+        dispatch(addFileToBin(deletedFile));
+        toast({
+          description: "File deleted successfully",
           variant: "default",
         });
       }
@@ -52,15 +64,25 @@ const FileFolderMoreOption = ({
   const handleRestoreFromBin = async () => {
     try {
       if (fileOrFolderData.$collectionId === conf.appwriteFolderCollectionId) {
-        const restoredFolder = await folderService.restoreFolder({
-          folderId: fileOrFolderData.$id,
+        const restoredFolder = await service.restoreDoc({
+          docId: fileOrFolderData.$id,
+          collectionId: conf.appwriteFolderCollectionId,
         });
         dispatch(removeFolderFromBin(restoredFolder));
-        toast({
-          description: "folder restored successfully",
-          variant: "default",
+      } else if (
+        fileOrFolderData.$collectionId === conf.appwriteFileCollectionId
+      ) {
+        const restoredFile = await service.restoreDoc({
+          docId: fileOrFolderData.$id,
+          collectionId: conf.appwriteFileCollectionId,
         });
+        dispatch(removeFileFromBin(restoredFile));
       }
+
+      toast({
+        description: "Document restored successfully",
+        variant: "default",
+      });
     } catch (error: any) {
       toast({ description: error.message, variant: "destructive" });
       console.log(error);
