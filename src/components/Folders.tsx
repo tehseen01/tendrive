@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import Icon from "./Icon";
 import FileFolderMoreOption from "./FileFolderMoreOption";
+import { isMobile } from "react-device-detect";
 
 const Folders = ({ data }: { data: TFolders }) => {
   const router = useRouter();
@@ -24,8 +25,12 @@ const Folders = ({ data }: { data: TFolders }) => {
             key={folder.$id}
             size={"lg"}
             className="max-sm:w-full max-sm:h-32 max-sm:p-4 flex-wrap sm:px-4"
-            onDoubleClick={() => handleFolderClick(folder.$id)}
-            onTouchEnd={() => handleFolderClick(folder.$id)}
+            onDoubleClick={() => {
+              if (!isMobile) handleFolderClick(folder.$id);
+            }}
+            onClick={() => {
+              if (isMobile) handleFolderClick(folder.$id);
+            }}
           >
             <span className="sm:mr-2 max-sm:w-full max-sm:h-16 block">
               <Icon
