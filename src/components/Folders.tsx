@@ -3,12 +3,14 @@
 import { TFolders } from "@/lib/types";
 import React from "react";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Icon from "./Icon";
 import FileFolderMoreOption from "./FileFolderMoreOption";
 import { isMobile } from "react-device-detect";
 
 const Folders = ({ data }: { data: TFolders }) => {
+  const pathname = usePathname();
+  const trashPath = pathname === "/drive/trash";
   const router = useRouter();
 
   const handleFolderClick = (folderId: string) => {
@@ -32,7 +34,9 @@ const Folders = ({ data }: { data: TFolders }) => {
             <div
               className="sm:mr-2 max-sm:w-full max-sm:h-16 block"
               onClick={() => {
-                if (isMobile) handleFolderClick(folder.$id);
+                if (!trashPath) {
+                  if (isMobile) handleFolderClick(folder.$id);
+                }
               }}
             >
               <Icon
@@ -44,7 +48,9 @@ const Folders = ({ data }: { data: TFolders }) => {
             <div
               className="flex-1 text-left"
               onClick={() => {
-                if (isMobile) handleFolderClick(folder.$id);
+                if (!trashPath) {
+                  if (isMobile) handleFolderClick(folder.$id);
+                }
               }}
             >
               {folder.name}
