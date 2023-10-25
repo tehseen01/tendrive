@@ -42,6 +42,15 @@ class StorageService {
     return preview;
   }
 
+  getFileView({ fileId }: { fileId: string }) {
+    const view = this.storage.getFileView(conf.appwriteBucketId, fileId);
+    return view;
+  }
+
+  downloadFile(fileId: string) {
+    return this.storage.getFileDownload(conf.appwriteBucketId, fileId);
+  }
+
   async updateFile({ fileId, name }: { fileId: string; name: string }) {
     try {
       return await this.storage.updateFile(conf.appwriteBucketId, fileId, name);

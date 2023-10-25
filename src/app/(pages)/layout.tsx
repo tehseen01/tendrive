@@ -7,7 +7,15 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <Providers>
         <Navbar />
-        <Suspense fallback={<>Loading...</>}>{children}</Suspense>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center h-screen">
+              Loading...
+            </div>
+          }
+        >
+          {children}
+        </Suspense>
       </Providers>
     </>
   );

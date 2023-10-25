@@ -5,12 +5,16 @@ type InitialState = {
   filesData: TFiles | null;
   fileInfo: null | TFileInfoType[];
   binFiles: null | TFiles;
+  openFile: boolean;
+  viewFileData: null | TFileInfoType;
 };
 
 const initialState: InitialState = {
   filesData: null,
   fileInfo: null,
   binFiles: null,
+  openFile: false,
+  viewFileData: null,
 };
 
 const fileSlice = createSlice({
@@ -57,6 +61,14 @@ const fileSlice = createSlice({
       let index = binFiles.findIndex((file) => file.$id === action.payload.$id);
       binFiles.splice(index, 1);
     },
+
+    setOpenFile: (state, action) => {
+      state.openFile = action.payload;
+    },
+
+    setViewFileData: (state, action) => {
+      state.viewFileData = action.payload;
+    },
   },
 });
 
@@ -68,5 +80,7 @@ export const {
   addFileToBin,
   setBinFiles,
   removeFileFromBin,
+  setOpenFile,
+  setViewFileData,
 } = fileSlice.actions;
 export default fileSlice.reducer;
