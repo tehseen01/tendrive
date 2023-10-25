@@ -10,7 +10,6 @@ import storageService from "@/appwrite/storageService";
 import { cn } from "@/lib/utils";
 
 const ViewFile = () => {
-  const printRef = useRef(null);
   const zoomRef = useRef(1);
 
   const dispatch = useAppDispatch();
@@ -53,17 +52,18 @@ const ViewFile = () => {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 z-50"
+      className="fixed inset-0 md:bg-black/60 bg-black z-50"
       onClick={() => dispatch(setOpenFile(false))}
     >
       <header className="flex items-center gap-4 justify-between md:p-4 p-2 relative z-40">
-        <div className="flex items-center gap-4 text-white">
+        <div className="flex items-center md:gap-4 gap-2 text-white">
           <Button
             size={"icon"}
             variant={"ghost"}
-            className="rounded-full hover:bg-black/20 cursor-pointer text-white hover:text-white"
+            className="rounded-full cursor-pointer text-white"
             onClick={() => dispatch(setOpenFile(false))}
             aria-label="Close"
+            title="Back button"
           >
             <Icon name="arrow-left" />
           </Button>
@@ -72,19 +72,31 @@ const ViewFile = () => {
               <span>
                 <Icon name="image" strokeWidth={1.5} />
               </span>
-              <span className="text-white">{viewFileData.name}</span>
+              <span className="text-white">
+                {viewFileData.name.length > 15
+                  ? viewFileData.name.slice(0, 15) + "..."
+                  : viewFileData.name}
+              </span>
             </>
           )}
         </div>
-        <div className="text-white flex items-center gap-4">
+        <div className="text-white flex items-center md:gap-4">
           <Button
+            size={"icon"}
             variant={"ghost"}
-            className="rounded-full"
+            className="rounded-full max-md:hidden"
             onClick={handlePrint}
           >
             <Icon name="printer" />
           </Button>
-          <Button variant={"ghost"} className="rounded-full" asChild>
+          <Button
+            variant={"ghost"}
+            size={"icon"}
+            className="rounded-full"
+            asChild
+            aria-label="Download button"
+            title="Download button"
+          >
             <a
               href={storageService.downloadFile(viewFileData?.$id!).href}
               download
@@ -93,7 +105,9 @@ const ViewFile = () => {
               <Icon name="download" />
             </a>
           </Button>
-          <Icon name="more-vertical" />
+          <Button variant={"ghost"} size={"icon"} className="rounded-full">
+            <Icon name="more-vertical" />
+          </Button>
         </div>
       </header>
       <div className="flex items-center justify-center h-[calc(100vh_-_130px)] md:w-[90%] m-auto">
@@ -116,7 +130,7 @@ const ViewFile = () => {
           />
         )}
       </div>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center max-md:hidden">
         <div className="flex items-center gap-2 bg-black/30 rounded-md p-1 text-white z-40">
           <Button
             variant={"ghost"}

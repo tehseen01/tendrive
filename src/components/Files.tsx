@@ -31,8 +31,16 @@ const Files = ({ filesData }: { filesData: TFiles }) => {
 
   const handleFileView = (info: TFileInfoType) => {
     if (!trashPath) {
-      dispatch(setOpenFile(true));
-      dispatch(setViewFileData(info));
+      if (info.mimeType.endsWith("pdf")) {
+        const url = storageService.getFileView({ fileId: info.$id });
+        window.open(url.href, "_blank");
+      } else if (info.mimeType.startsWith("image")) {
+        dispatch(setOpenFile(true));
+        dispatch(setViewFileData(info));
+      } else {
+        const downloadURL = storageService.downloadFile(info.$id).href;
+        window.open(downloadURL);
+      }
     }
   };
 
