@@ -1,11 +1,19 @@
+"use client";
+
 import React from "react";
 import { Button } from "./ui/button";
 import Icon from "./Icon";
 import NewDropdown from "./NewDropdown";
 import Logout from "./dialog/Logout";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { setOpenMobileNav } from "@/redux/commonSlice";
 
 const Sidebar = () => {
+  const dispatch = useAppDispatch();
+
+  const { openMobileNav } = useAppSelector((state) => state.common);
+
   return (
     <div className="p-4">
       <div className="max-md:hidden">
@@ -26,7 +34,10 @@ const Sidebar = () => {
               className="w-full justify-start gap-4"
               asChild
             >
-              <Link href={`/drive/${link.value}`}>
+              <Link
+                href={`/drive/${link.value}`}
+                onClick={() => dispatch(setOpenMobileNav(false))}
+              >
                 <span>{link.icon}</span>
                 {link.label}
               </Link>

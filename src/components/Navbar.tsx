@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { useAppSelector } from "@/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Input } from "./ui/input";
 import Icon from "./Icon";
@@ -11,18 +11,19 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import Logout from "./dialog/Logout";
 import Sidebar from "./Sidebar";
 import { cn } from "@/lib/utils";
+import { setOpenMobileNav } from "@/redux/commonSlice";
 
 const Navbar = () => {
+  const dispatch = useAppDispatch();
   const { authStatus, user, userProfile } = useAppSelector(
     (state) => state.user
   );
-
-  const [openMobileNav, setOpenMobileNav] = useState(false);
+  const { openMobileNav } = useAppSelector((state) => state.common);
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
-        setOpenMobileNav(false);
+        dispatch(setOpenMobileNav(false));
       }
     };
     window.addEventListener("resize", handleResize);
@@ -30,7 +31,7 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <header className="md:px-6 px-4 border-b">
@@ -41,7 +42,7 @@ const Navbar = () => {
               variant={"ghost"}
               size={"icon"}
               className="md:hidden"
-              onClick={() => setOpenMobileNav((prev) => !prev)}
+              onClick={() => dispatch(setOpenMobileNav(!openMobileNav))}
             >
               <Icon name="menu" />
             </Button>
@@ -135,7 +136,7 @@ const Navbar = () => {
           <Button
             variant={"ghost"}
             size={"icon"}
-            onClick={() => setOpenMobileNav((prev) => !prev)}
+            onClick={() => dispatch(setOpenMobileNav(!openMobileNav))}
           >
             <Icon name="x" strokeWidth={1.5} />
           </Button>

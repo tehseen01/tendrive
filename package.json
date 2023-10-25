@@ -40,6 +40,7 @@
     "react": "^18",
     "react-day-picker": "^8.8.2",
     "react-device-detect": "^2.2.3",
+    "react-doc-viewer": "^0.1.5",
     "react-dom": "^18",
     "react-hook-form": "^7.47.0",
     "react-redux": "^8.1.3",

@@ -24,22 +24,31 @@ const Folders = ({ data }: { data: TFolders }) => {
             variant={"secondary"}
             key={folder.$id}
             size={"lg"}
-            className="max-sm:w-full max-sm:h-32 max-sm:p-4 flex-wrap sm:px-4"
+            className="max-sm:w-full max-sm:h-32 max-sm:p-4 flex-wrap sm:px-4 hover:bg-gray-200"
             onDoubleClick={() => {
               if (!isMobile) handleFolderClick(folder.$id);
             }}
-            onClick={() => {
-              if (isMobile) handleFolderClick(folder.$id);
-            }}
           >
-            <span className="sm:mr-2 max-sm:w-full max-sm:h-16 block">
+            <div
+              className="sm:mr-2 max-sm:w-full max-sm:h-16 block"
+              onClick={() => {
+                if (isMobile) handleFolderClick(folder.$id);
+              }}
+            >
               <Icon
                 name="folder"
                 strokeWidth={1.5}
                 className="w-full h-full max-sm:stroke-1"
               />
-            </span>
-            <span className="flex-1 text-left">{folder.name}</span>
+            </div>
+            <div
+              className="flex-1 text-left"
+              onClick={() => {
+                if (isMobile) handleFolderClick(folder.$id);
+              }}
+            >
+              {folder.name}
+            </div>
             <FileFolderMoreOption fileOrFolderData={folder} />
           </Button>
         ))}
