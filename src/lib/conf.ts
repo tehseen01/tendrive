@@ -12,6 +12,9 @@ const conf = {
   appwriteFileCollectionId: String(
     process.env.NEXT_PUBLIC_APPWRITE_FILE_COLLECTION_ID
   ),
+  appwriteShareCollectionId: String(
+    process.env.NEXT_PUBLIC_APPWRITE_SHARE_COLLECTION_ID
+  ),
 };
 
 export default conf;
