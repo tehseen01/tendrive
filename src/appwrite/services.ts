@@ -6,6 +6,7 @@ type TGetDocs = { userId: string; collectionId: string };
 type TGetChildDocs = { parentId: string; userId: string; collectionId: string };
 type TRenameDoc = { docId: string; name: string; collectionId: string };
 type TDocAndCollectionId = { docId: string; collectionId: string };
+type TSaveUser = { userId: string; username: string; email: string };
 
 class Services {
   client = new Client();
@@ -16,6 +17,29 @@ class Services {
       .setEndpoint(conf.appwriteURL)
       .setProject(conf.appwriteProjectId);
     this.database = new Databases(this.client);
+  }
+
+  async saveUserInDatabase({ userId, username, email }: TSaveUser) {
+    try {
+      const checkUser = await this.database.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteUserCollectionId,
+        [Query.equal("email", email)]
+      );
+
+      if (checkUser.total === 0) {
+        const user = await this.database.createDocument(
+          conf.appwriteDatabaseId,
+          conf.appwriteUserCollectionId,
+          userId,
+          { username, email }
+        );
+
+        return user;
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   async createDoc({ userId, collectionId, docId, name, parentId }: TCreateDoc) {

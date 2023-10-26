@@ -19,6 +19,7 @@ import { addFolderToBin, removeFolderFromBin } from "@/redux/folderSlice";
 import DeleteForeverDialog from "./dialog/DeleteForeverDialog";
 import service from "@/appwrite/services";
 import { addFileToBin, removeFileFromBin } from "@/redux/fileSlice";
+import ShareDialog from "./dialog/ShareDialog";
 
 const FileFolderMoreOption = ({
   fileOrFolderData,
@@ -28,7 +29,7 @@ const FileFolderMoreOption = ({
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const [dialogType, setDialogType] = useState<"DELETE" | "RENAME">();
+  const [dialogType, setDialogType] = useState<"DELETE" | "RENAME" | "SHARE">();
 
   const { toast } = useToast();
 
@@ -124,12 +125,14 @@ const FileFolderMoreOption = ({
                 <span>Rename</span>
               </DropdownMenuItem>
             </DialogTrigger>
-            <DropdownMenuItem>
-              <span className="mr-2">
-                <Icon name="share" size={18} />
-              </span>
-              <span>Share</span>
-            </DropdownMenuItem>
+            <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
+              <DropdownMenuItem>
+                <span className="mr-2">
+                  <Icon name="share" size={18} />
+                </span>
+                <span>Share</span>
+              </DropdownMenuItem>
+            </DialogTrigger>
             <DropdownMenuItem
               onClick={() => handleMoveToBin(fileOrFolderData)}
               className="cursor-pointer"
@@ -144,6 +147,8 @@ const FileFolderMoreOption = ({
       </DropdownMenu>
       {dialogType === "DELETE" ? (
         <DeleteForeverDialog deleteData={fileOrFolderData} setOpen={setOpen} />
+      ) : dialogType === "SHARE" ? (
+        <ShareDialog shareData={fileOrFolderData} />
       ) : (
         <RenameDialog renameData={fileOrFolderData} setOpen={setOpen} />
       )}
