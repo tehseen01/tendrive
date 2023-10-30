@@ -4,7 +4,6 @@ import service from "@/appwrite/services";
 import Icon from "@/components/Icon";
 import NewDropdown from "@/components/NewDropdown";
 import Sidebar from "@/components/Sidebar";
-import WithAuth from "@/components/WithAuth";
 import ViewFile from "@/components/dialog/ViewFile";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/hooks/hooks";
@@ -21,7 +20,7 @@ const DriveLayout = ({ children }: { children: React.ReactNode }) => {
           await service.saveUserInDatabase({
             userId: user.$id,
             email: user.email,
-            username: user.name,
+            name: user.name,
           });
         }
       } catch (error: any) {
@@ -62,4 +61,4 @@ const DriveLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default WithAuth(DriveLayout);
+export default DriveLayout;

@@ -1,16 +1,18 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userSlice from "./userSlice";
 import folderSlice from "./folderSlice";
 import fileSlice from "./fileSlice";
 import commonSlice from "./commonSlice";
 
+const rootReducer = combineReducers({
+  user: userSlice,
+  folder: folderSlice,
+  file: fileSlice,
+  common: commonSlice,
+});
+
 const store = configureStore({
-  reducer: {
-    user: userSlice,
-    folder: folderSlice,
-    file: fileSlice,
-    common: commonSlice,
-  },
+  reducer: rootReducer,
 });
 
 export default store;

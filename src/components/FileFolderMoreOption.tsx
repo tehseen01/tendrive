@@ -10,16 +10,17 @@ import {
 } from "./ui/dropdown-menu";
 import Icon from "./Icon";
 import RenameDialog from "./dialog/RenameDialog";
-import { BinType, TFile, TFolder } from "@/lib/types";
+import { TFile, TFolder } from "@/lib/types";
 import { useToast } from "./ui/use-toast";
 import conf from "@/lib/conf";
 import { usePathname } from "next/navigation";
-import { useAppDispatch } from "@/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { addFolderToBin, removeFolderFromBin } from "@/redux/folderSlice";
 import DeleteForeverDialog from "./dialog/DeleteForeverDialog";
 import service from "@/appwrite/services";
 import { addFileToBin, removeFileFromBin } from "@/redux/fileSlice";
 import ShareDialog from "./dialog/ShareDialog";
+import { removeShareDoc } from "@/redux/commonSlice";
 
 const FileFolderMoreOption = ({
   fileOrFolderData,
@@ -33,11 +34,13 @@ const FileFolderMoreOption = ({
 
   const { toast } = useToast();
 
-  const handleMoveToBin = async (data: TFolder) => {
+  const { user } = useAppSelector((state) => state.user);
+
+  const handleMoveToBin = async () => {
     try {
-      if (data.$collectionId === conf.appwriteFolderCollectionId) {
+      if (fileOrFolderData.$collectionId === conf.appwriteFolderCollectionId) {
         const deletedFolder = await service.moveToBinDoc({
-          docId: data.$id,
+          docId: fileOrFolderData.$id,
           collectionId: conf.appwriteFolderCollectionId,
         });
         dispatch(addFolderToBin(deletedFolder));
@@ -45,9 +48,11 @@ const FileFolderMoreOption = ({
           description: "folder deleted successfully",
           variant: "default",
         });
-      } else if (data.$collectionId === conf.appwriteFileCollectionId) {
+      } else if (
+        fileOrFolderData.$collectionId === conf.appwriteFileCollectionId
+      ) {
         const deletedFile = await service.moveToBinDoc({
-          docId: data.$id,
+          docId: fileOrFolderData.$id,
           collectionId: conf.appwriteFileCollectionId,
         });
         dispatch(addFileToBin(deletedFile));
@@ -90,6 +95,25 @@ const FileFolderMoreOption = ({
     }
   };
 
+  const handleRemoveShareDoc = async () => {
+    try {
+      if (user) {
+        await service.deleteShareDoc({
+          userId: user.$id,
+          docId: fileOrFolderData.$id,
+        });
+        dispatch(removeShareDoc(fileOrFolderData.$id));
+        toast({
+          description: "Document removed successfully",
+          variant: "default",
+        });
+      }
+    } catch (error: any) {
+      toast({ description: error.message, variant: "destructive" });
+      console.log(error);
+    }
+  };
+
   return (
     <Dialog onOpenChange={setOpen} open={open}>
       <DropdownMenu>
@@ -118,11 +142,19 @@ const FileFolderMoreOption = ({
         ) : (
           <DropdownMenuContent className="w-60">
             <DialogTrigger asChild onClick={() => setDialogType("RENAME")}>
-              <DropdownMenuItem>
+              <DropdownMenuItem disabled={pathname === "/drive/share-with-me"}>
                 <span className="mr-2">
                   <Icon name="pen-line" size={18} />
                 </span>
                 <span>Rename</span>
+              </DropdownMenuItem>
+            </DialogTrigger>
+            <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
+              <DropdownMenuItem>
+                <span className="mr-2">
+                  <Icon name="download" size={18} />
+                </span>
+                <span>Download</span>
               </DropdownMenuItem>
             </DialogTrigger>
             <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
@@ -133,22 +165,34 @@ const FileFolderMoreOption = ({
                 <span>Share</span>
               </DropdownMenuItem>
             </DialogTrigger>
-            <DropdownMenuItem
-              onClick={() => handleMoveToBin(fileOrFolderData)}
-              className="cursor-pointer"
-            >
-              <span className="mr-2">
-                <Icon name="trash" size={18} />
-              </span>
-              <span>Move to bin</span>
-            </DropdownMenuItem>
+            {pathname === "/drive/share-with-me" ? (
+              <DropdownMenuItem
+                onClick={handleRemoveShareDoc}
+                className="cursor-pointer"
+              >
+                <span className="mr-2">
+                  <Icon name="trash" size={18} />
+                </span>
+                <span>Remove</span>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={handleMoveToBin}
+                className="cursor-pointer"
+              >
+                <span className="mr-2">
+                  <Icon name="trash" size={18} />
+                </span>
+                <span>Move to bin</span>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         )}
       </DropdownMenu>
       {dialogType === "DELETE" ? (
         <DeleteForeverDialog deleteData={fileOrFolderData} setOpen={setOpen} />
       ) : dialogType === "SHARE" ? (
-        <ShareDialog shareData={fileOrFolderData} />
+        <ShareDialog shareData={fileOrFolderData} setOpen={setOpen} />
       ) : (
         <RenameDialog renameData={fileOrFolderData} setOpen={setOpen} />
       )}

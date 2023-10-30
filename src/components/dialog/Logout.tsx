@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,14 +13,21 @@ import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
 import authService from "@/appwrite/auth";
+import { useAppDispatch } from "@/hooks/hooks";
+import { resetUser } from "@/redux/userSlice";
 
 const Logout = ({ children }: { children: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
+  const dispatch = useAppDispatch();
+
   const { toast } = useToast();
   const router = useRouter();
 
   const handleLogout = async () => {
     try {
       await authService.logout();
+      dispatch(resetUser());
+      setOpen(false);
       router.push("/");
     } catch (error: any) {
       toast({ title: error.message, variant: "destructive" });
@@ -29,7 +36,7 @@ const Logout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -1,6 +1,3 @@
-"use client";
-
-import WithAuth from "@/components/WithAuth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -33,4 +30,4 @@ function Home() {
   );
 }
 
-export default WithAuth(Home);
+export default Home;

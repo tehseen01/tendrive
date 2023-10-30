@@ -1,24 +1,24 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
-import Providers from "@/components/Providers";
+import WithAuth from "@/components/WithAuth";
 import React, { Suspense } from "react";
 
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <Providers>
-        <Navbar />
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center h-screen">
-              Loading...
-            </div>
-          }
-        >
-          {children}
-        </Suspense>
-      </Providers>
+      <Navbar />
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center h-screen">
+            Loading...
+          </div>
+        }
+      >
+        {children}
+      </Suspense>
     </>
   );
 };
 
-export default PageLayout;
+export default WithAuth(PageLayout);
