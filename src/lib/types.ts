@@ -1,6 +1,5 @@
 export type TUser = {
   $id: string;
-  accountId: string;
   name: string;
   email: string;
   profile: null | string;
@@ -17,20 +16,6 @@ export type TCreateAccount = {
 export type TLogin = {
   email: string;
   password: string;
-};
-
-export type TCreateFolder = {
-  name: string;
-  userId: string;
-  parentId: string | null;
-};
-
-export type TCreateFile = {
-  name: string;
-  fileId: string;
-  userId: string;
-  parentId: string | null;
-  isDeleted: Boolean;
 };
 
 export type TCreateDoc = {
@@ -85,3 +70,20 @@ export type TFileInfoType = {
 };
 
 export type BinType = "FOLDERS" | "NOTES" | "DOCS";
+
+export type TShareDocs = {
+  total: number;
+  documents: TShareDoc[];
+};
+
+export type TShareDoc = {
+  $id: string;
+  shareWithId: string;
+  accessType: string;
+  $databaseId: string;
+  $collectionId: string;
+  files: TFile | null;
+  folders: TFolder | null;
+  $createdAt: Date;
+  $updatedAt: Date;
+};

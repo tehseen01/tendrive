@@ -1,12 +1,13 @@
 import conf from "@/lib/conf";
 import { TCreateDoc } from "@/lib/types";
-import { Client, Databases, Query } from "appwrite";
+import { Client, Databases, ID, Query } from "appwrite";
 
 type TGetDocs = { userId: string; collectionId: string };
 type TGetChildDocs = { parentId: string; userId: string; collectionId: string };
 type TRenameDoc = { docId: string; name: string; collectionId: string };
 type TDocAndCollectionId = { docId: string; collectionId: string };
-type TSaveUser = { userId: string; username: string; email: string };
+type TSaveUser = { userId: string; name: string; email: string };
+type CreateShareDoc = { docId: string; shareWithId: string };
 
 class Services {
   client = new Client();
@@ -19,7 +20,7 @@ class Services {
     this.database = new Databases(this.client);
   }
 
-  async saveUserInDatabase({ userId, username, email }: TSaveUser) {
+  async saveUserInDatabase({ userId, name, email }: TSaveUser) {
     try {
       const checkUser = await this.database.listDocuments(
         conf.appwriteDatabaseId,
@@ -32,11 +33,25 @@ class Services {
           conf.appwriteDatabaseId,
           conf.appwriteUserCollectionId,
           userId,
-          { username, email }
+          { name, email }
         );
 
         return user;
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchUser(query: string) {
+    try {
+      const user = await this.database.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteUserCollectionId,
+        [Query.search("email", query)]
+      );
+
+      return user;
     } catch (error) {
       throw error;
     }
@@ -156,6 +171,62 @@ class Services {
       );
 
       return deletedDoc;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createShareDoc({ docId, shareWithId }: CreateShareDoc) {
+    try {
+      const share = await this.database.createDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteShareCollectionId,
+        `${docId}-${shareWithId.slice(0, 15)}`,
+        { shareWithId, folders: docId, files: docId }
+      );
+
+      return share;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getShareDocs(userId: string) {
+    try {
+      const docs = await this.database.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteShareCollectionId,
+        [Query.equal("shareWithId", userId)]
+      );
+
+      return docs;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getSharedFolderOrFile(docId: string, collectionId: string) {
+    try {
+      const folderOrFile = await this.database.getDocument(
+        conf.appwriteDatabaseId,
+        collectionId,
+        docId
+      );
+      return folderOrFile;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteShareDoc({ userId, docId }: { userId: string; docId: string }) {
+    try {
+      const getDoc = await this.database.deleteDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteShareCollectionId,
+        `${docId}-${userId.slice(0, 15)}`
+      );
+
+      return getDoc;
     } catch (error) {
       throw error;
     }

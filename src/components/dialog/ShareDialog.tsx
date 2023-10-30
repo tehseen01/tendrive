@@ -1,27 +1,68 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import { DialogContent, DialogFooter, DialogHeader } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { TFile, TFolder } from "@/lib/types";
+import { TFile, TFolder, TUser } from "@/lib/types";
 import { Input } from "../ui/input";
-import { useAppSelector } from "@/hooks/hooks";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { useToast } from "../ui/use-toast";
+import useDebounce from "@/hooks/useDebounce";
+import service from "@/appwrite/services";
+import { setSearchUser, setSelectedUser } from "@/redux/userSlice";
+import UserCard from "../UserCard";
 
-const ShareDialog = ({ shareData }: { shareData: TFolder | TFile }) => {
+type ShareDialogProp = {
+  shareData: TFolder | TFile;
+  setOpen: React.Dispatch<SetStateAction<boolean>>;
+};
+
+const ShareDialog = ({ shareData, setOpen }: ShareDialogProp) => {
   const [searchValue, setSearchValue] = useState("");
+  const debounceValue = useDebounce(searchValue, 500);
+
+  const dispatch = useAppDispatch();
 
   const { toast } = useToast();
-  const { user } = useAppSelector((state) => state.user);
+  const { user, searchUser, selectedUser } = useAppSelector(
+    (state) => state.user
+  );
+
+  const handleSend = async () => {
+    try {
+      if (user && selectedUser) {
+        const shareDoc = await service.createShareDoc({
+          docId: shareData.$id,
+          shareWithId: selectedUser.$id,
+        });
+        if (shareDoc) {
+          setOpen(false);
+          dispatch(setSelectedUser(null));
+          toast({
+            title: "Done",
+            description: `Document share with '${selectedUser.name}'`,
+            variant: "default",
+          });
+        }
+      }
+    } catch (error: any) {
+      toast({ description: error.message, variant: "destructive" });
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const time = setTimeout(() => {}, 1000);
+    async function searchUser() {
+      try {
+        const user = await service.searchUser(debounceValue);
 
-    return () => {
-      clearTimeout(time);
-    };
-  }, []);
+        dispatch(setSearchUser(user));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    searchUser();
+  }, [debounceValue, dispatch]);
 
   return (
     <DialogContent>
@@ -34,30 +75,33 @@ const ShareDialog = ({ shareData }: { shareData: TFolder | TFile }) => {
           &quot;
         </h4>
       </DialogHeader>
-      <Input
-        placeholder="Add people"
-        name="people"
-        id="people"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-      />
-      <p>People with access</p>
-      <div className="flex gap-2 items-center hover:bg-gray-200 p-2">
-        <Avatar>
-          <AvatarFallback>
-            <span className="font-bold text-2xl">
-              {user?.name.charAt(0).toUpperCase()}
-            </span>
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1">
-          <h2 className="font-medium text-sm">{user?.name} (You)</h2>
-          <p className="text-xs">{user?.email}</p>
-        </div>
-        <span className="text-xs">Owner</span>
+      <div className="relative">
+        <Input
+          placeholder="Add people"
+          name="people"
+          id="people"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+        {searchUser !== null && searchUser.total > 0 && (
+          <div className="absolute bg-secondary left-0 mt-1 w-full shadow-xl">
+            {searchUser.total !== 0 &&
+              searchUser.documents.map((user) => (
+                <UserCard type="SEARCH" user={user} key={user.$id} />
+              ))}
+          </div>
+        )}
       </div>
+      <p>People with access</p>
+      {user && <UserCard type="OWNER" user={user} />}
+      {selectedUser !== null && (
+        <>
+          <p>Selected User</p>
+          <UserCard type="SELECTED" user={selectedUser} />
+        </>
+      )}
       <DialogFooter>
-        <Button>Done</Button>
+        <Button onClick={handleSend}>Send</Button>
       </DialogFooter>
     </DialogContent>
   );
