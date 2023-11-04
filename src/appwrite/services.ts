@@ -8,6 +8,7 @@ type TRenameDoc = { docId: string; name: string; collectionId: string };
 type TDocAndCollectionId = { docId: string; collectionId: string };
 type TSaveUser = { userId: string; name: string; email: string };
 type CreateShareDoc = { docId: string; shareWithId: string };
+type SearchFilter = { userId: string; query: string; collectionId: string };
 
 class Services {
   client = new Client();
@@ -227,6 +228,25 @@ class Services {
       );
 
       return getDoc;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchFilter({ query, userId, collectionId }: SearchFilter) {
+    try {
+      const search = await this.database.listDocuments(
+        conf.appwriteDatabaseId,
+        collectionId,
+        [
+          Query.equal("userId", userId),
+          Query.search("name", query),
+          Query.notEqual("isDeleted", true),
+          Query.isNull("parentId"),
+        ]
+      );
+
+      return search;
     } catch (error) {
       throw error;
     }

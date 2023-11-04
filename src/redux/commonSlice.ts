@@ -5,12 +5,18 @@ type InitialState = {
   openMobileNav: boolean;
   shareFolders: TFolders | null;
   shareFiles: TFiles | null;
+  searchFolders: TFolders | null;
+  searchFiles: TFiles | null;
+  mobileSearchBar: boolean;
 };
 
 const initialState: InitialState = {
   openMobileNav: false,
   shareFiles: null,
   shareFolders: null,
+  searchFiles: null,
+  searchFolders: null,
+  mobileSearchBar: false,
 };
 
 const commonSlice = createSlice({
@@ -68,9 +74,27 @@ const commonSlice = createSlice({
         }
       }
     },
+
+    setSearchFolders: (state, action) => {
+      state.searchFolders = action.payload;
+    },
+
+    setSearchFiles: (state, action) => {
+      state.searchFiles = action.payload;
+    },
+
+    setMobileSearchBar: (state) => {
+      state.mobileSearchBar = !state.mobileSearchBar;
+    },
   },
 });
 
-export const { setOpenMobileNav, setShareDocs, removeShareDoc } =
-  commonSlice.actions;
+export const {
+  setOpenMobileNav,
+  setShareDocs,
+  removeShareDoc,
+  setSearchFiles,
+  setSearchFolders,
+  setMobileSearchBar,
+} = commonSlice.actions;
 export default commonSlice.reducer;
