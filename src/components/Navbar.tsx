@@ -5,20 +5,22 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Input } from "./ui/input";
 import Icon from "./Icon";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import Logout from "./dialog/Logout";
 import Sidebar from "./Sidebar";
 import { cn } from "@/lib/utils";
-import { setOpenMobileNav } from "@/redux/commonSlice";
+import { setMobileSearchBar, setOpenMobileNav } from "@/redux/commonSlice";
+import Search from "./Search";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const { authStatus, user, userProfile } = useAppSelector(
     (state) => state.user
   );
-  const { openMobileNav } = useAppSelector((state) => state.common);
+  const { openMobileNav, mobileSearchBar } = useAppSelector(
+    (state) => state.common
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -47,27 +49,26 @@ const Navbar = () => {
               <Icon name="menu" />
             </Button>
           )}
-          <Link href={"/"}>
+          <Link href={"/"} className={cn(mobileSearchBar ? "hidden" : "")}>
             <span className="text-2xl font-bold">Ten</span>
             <span className="text-2xl">Drive</span>
           </Link>
         </div>
-        {authStatus && (
-          <div className="flex relative max-md:hidden">
-            <Icon
-              name="search"
-              className="absolute left-2 top-2"
-              strokeWidth={1.5}
-            />
-            <Input placeholder="Search here..." className="pl-10" />
-          </div>
-        )}
+        {authStatus && <Search />}
 
         {authStatus ? (
           <div className="flex gap-4">
             <div className="md:hidden">
-              <Button size={"icon"} variant={"ghost"}>
-                <Icon name="search" strokeWidth={1.5} />
+              <Button
+                size={"icon"}
+                variant={"ghost"}
+                onClick={() => dispatch(setMobileSearchBar())}
+              >
+                {mobileSearchBar ? (
+                  <Icon name="x" strokeWidth={1.5} />
+                ) : (
+                  <Icon name="search" strokeWidth={1.5} />
+                )}
               </Button>
             </div>
             <Popover>
