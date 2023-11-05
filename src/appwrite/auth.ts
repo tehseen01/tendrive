@@ -41,6 +41,17 @@ export class AuthService {
     }
   }
 
+  async testUserLogIn() {
+    try {
+      return await this.account.createEmailSession(
+        "testuser@mail.com",
+        "password"
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async currentUser() {
     try {
       return await this.account.get();

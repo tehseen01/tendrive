@@ -38,9 +38,15 @@ const Drive = () => {
 
   return (
     <div className="p-4 pb-24 overflow-y-auto h-full">
-      {foldersData && <Folders data={foldersData} />}
-      {filesData && <Files filesData={filesData} />}
-      {!foldersData && <InitialPage />}
+      {(foldersData && foldersData.total !== 0) ||
+      (filesData && filesData.total !== 0) ? (
+        <>
+          {foldersData && <Folders data={foldersData} />}
+          {filesData && <Files filesData={filesData} />}
+        </>
+      ) : (
+        <InitialPage />
+      )}
     </div>
   );
 };

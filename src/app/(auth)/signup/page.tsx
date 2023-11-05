@@ -11,9 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import useTestLogIn from "@/hooks/useTestLogIn";
 import Link from "next/link";
 
 const SignUp = () => {
+  const handleTestLogin = useTestLogIn();
+
   return (
     <main className="flex items-center justify-center bg-background h-screen relative">
       <BackButton />
@@ -34,9 +37,9 @@ const SignUp = () => {
               <Icon name="github" className="mr-2 h-4 w-4" />
               Github
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleTestLogin}>
               <Icon name="chrome" className="mr-2 h-4 w-4" />
-              Google
+              Test User
             </Button>
           </div>
           <div className="relative">
