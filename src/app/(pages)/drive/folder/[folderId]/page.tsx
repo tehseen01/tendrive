@@ -44,7 +44,7 @@ const FolderPage = ({ params }: { params: { folderId: string } }) => {
 
       {filesData && filesData.total !== 0 && <Files filesData={filesData} />}
 
-      {!foldersData?.total && (
+      {!foldersData?.total && !filesData?.total && (
         <div className="flex items-center justify-center flex-col h-[calc(100%_-_100px)]">
           <h2 className="text-2xl font-semibold">Drop files here</h2>
           <p>or use the `New` button</p>
