@@ -1,14 +1,6 @@
 "use client";
 
 import React from "react";
-import {
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
 import { TFolder } from "@/lib/types";
 import conf from "@/lib/conf";
 import { useToast } from "../ui/use-toast";
@@ -17,6 +9,15 @@ import { removeFolderFromBin } from "@/redux/folderSlice";
 import service from "@/appwrite/services";
 import storageService from "@/appwrite/storageService";
 import { removeFileFromBin } from "@/redux/fileSlice";
+import {
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 type DeleteForeverDialogProp = {
   deleteData: TFolder;
@@ -59,18 +60,21 @@ const DeleteForeverDialog = ({
   };
 
   return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Delete Forever?</DialogTitle>
-        <DialogDescription>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Delete Forever?</AlertDialogTitle>
+        <AlertDialogDescription>
           &apos;{deleteData.name}&apos; will be deleted forever and you
           won&apos;t be able to restore it.
-        </DialogDescription>
-      </DialogHeader>
-      <DialogFooter>
-        <Button onClick={handleDeleteForever}>Delete</Button>
-      </DialogFooter>
-    </DialogContent>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction onClick={handleDeleteForever}>
+          Delete
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
   );
 };
 

@@ -73,18 +73,18 @@ const Links = [
     icon: <Icon name="users-2" strokeWidth={1.25} />,
   },
   {
-    label: "Recent",
-    value: "recent",
-    icon: <Icon name="clock-4" strokeWidth={1.25} />,
+    label: "Notes",
+    value: "",
+    icon: <Icon name="lightbulb" strokeWidth={1.25} />,
   },
   {
     label: "Stared",
-    value: "stared",
+    value: "",
     icon: <Icon name="star" strokeWidth={1.25} />,
   },
   {
     label: "Spam",
-    value: "spam",
+    value: "",
     icon: <Icon name="info" strokeWidth={1.25} />,
   },
   {
@@ -94,7 +94,7 @@ const Links = [
   },
   {
     label: "Storage",
-    value: "storage",
+    value: "",
     icon: <Icon name="cloud" strokeWidth={1.25} />,
   },
 ];

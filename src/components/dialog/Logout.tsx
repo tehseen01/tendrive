@@ -15,6 +15,16 @@ import { useRouter } from "next/navigation";
 import authService from "@/appwrite/auth";
 import { useAppDispatch } from "@/hooks/hooks";
 import { resetUser } from "@/redux/userSlice";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 const Logout = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -36,17 +46,20 @@ const Logout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you sure you want to Logout</DialogTitle>
-        </DialogHeader>
-        <DialogFooter>
-          <Button onClick={() => handleLogout()}>Logout</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <AlertDialog onOpenChange={setOpen} open={open}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure you want to Logout</AlertDialogTitle>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={() => handleLogout()}>
+            Logout
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

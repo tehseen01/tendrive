@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import FileFolderMoreOption from "./FileFolderMoreOption";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { setFileInfo, setOpenFile, setViewFileData } from "@/redux/fileSlice";
-import Icon from "./Icon";
 import { usePathname } from "next/navigation";
 
 const Files = ({ filesData }: { filesData: TFiles }) => {
@@ -58,20 +57,12 @@ const Files = ({ filesData }: { filesData: TFiles }) => {
               onDoubleClick={() => handleFileView(info!)}
             >
               <div className="flex justify-between items-center px-4 h-11">
-                {info && (
-                  <div className="flex items-center">
-                    {info.mimeType.startsWith("image") && (
-                      <span className="mr-2">
-                        <Icon name="image" strokeWidth={1.5} />
-                      </span>
-                    )}
-                    <span>
-                      {info.name.length > 10
-                        ? info.name.slice(0, 10) + "..."
-                        : info.name}
-                    </span>
-                  </div>
-                )}
+                <span>
+                  {file.name.length > 10
+                    ? file.name.slice(0, 10) + "..."
+                    : file.name}
+                </span>
+
                 <FileFolderMoreOption fileOrFolderData={file} />
               </div>
               <figure className="w-full aspect-square p-2">
