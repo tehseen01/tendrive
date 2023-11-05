@@ -22,7 +22,18 @@ const folderSlice = createSlice({
     },
 
     appendFolder: (state, action) => {
-      state.foldersData?.documents.unshift(action.payload);
+      let folder = action.payload;
+      let folderData = state.foldersData;
+
+      if (folderData) {
+        folderData.documents.unshift(folder);
+        folderData.total += 1;
+      } else {
+        folderData = {
+          total: 1,
+          documents: [folder],
+        };
+      }
     },
 
     updateFolder: (state, action) => {
@@ -42,22 +53,30 @@ const folderSlice = createSlice({
     },
 
     addFolderToBin: (state, action) => {
-      let folders = state.foldersData?.documents!;
+      let payload = action.payload;
+      let foldersData = state.foldersData;
 
-      let index = folders.findIndex(
-        (folder) => folder.$id === action.payload.$id
-      );
+      if (foldersData) {
+        let newFolders = foldersData.documents.filter(
+          (folder) => folder.$id !== payload.$id
+        );
 
-      folders.splice(index, 1);
+        foldersData.documents = newFolders;
+        foldersData.total = newFolders.length;
+      }
     },
 
     removeFolderFromBin: (state, action) => {
-      let binFolders = state.binFolders?.documents!;
+      let binFolders = state.binFolders;
 
-      let index = binFolders.findIndex(
-        (folder) => folder.$id === action.payload.$id
-      );
-      binFolders.splice(index, 1);
+      if (binFolders) {
+        let newBin = binFolders.documents.filter(
+          (folder) => folder.$id !== action.payload.$id
+        );
+
+        binFolders.documents = newBin;
+        binFolders.total = newBin.length;
+      }
     },
   },
 });

@@ -26,7 +26,18 @@ const fileSlice = createSlice({
     },
 
     appendFile: (state, action) => {
-      state.filesData?.documents.unshift(action.payload);
+      let file = action.payload;
+      let filesData = state.filesData;
+
+      if (filesData) {
+        filesData.documents.unshift(file);
+        filesData.total += 1;
+      } else {
+        filesData = {
+          total: 1,
+          documents: [file],
+        };
+      }
     },
 
     setFileInfo: (state, action) => {
@@ -44,11 +55,17 @@ const fileSlice = createSlice({
     },
 
     addFileToBin: (state, action) => {
-      let fileData = state.filesData?.documents!;
+      let fileData = state.filesData;
+      let payload = action.payload;
 
-      let index = fileData.findIndex((file) => file.$id === action.payload.$id);
+      if (fileData) {
+        let newFiles = fileData.documents.filter(
+          (file) => file.$id !== payload.$id
+        );
 
-      fileData.splice(index, 1);
+        fileData.documents = newFiles;
+        fileData.total = newFiles.length;
+      }
     },
 
     setBinFiles: (state, action) => {
@@ -56,10 +73,16 @@ const fileSlice = createSlice({
     },
 
     removeFileFromBin: (state, action) => {
-      let binFiles = state.binFiles?.documents!;
+      let binFiles = state.binFiles;
+      let payload = action.payload;
 
-      let index = binFiles.findIndex((file) => file.$id === action.payload.$id);
-      binFiles.splice(index, 1);
+      if (binFiles) {
+        let newBin = binFiles.documents.filter(
+          (file) => file.$id !== payload.$id
+        );
+        binFiles.documents = newBin;
+        binFiles.total = newBin.length;
+      }
     },
 
     setOpenFile: (state, action) => {

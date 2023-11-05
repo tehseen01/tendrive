@@ -41,7 +41,9 @@ const TrashPage = () => {
       {binFolders && binFolders.total !== 0 && <Folders data={binFolders} />}
       {binFiles && binFiles.total !== 0 && <Files filesData={binFiles} />}
       {(!binFolders || binFolders.total === 0) &&
-        (!binFiles || binFiles.total === 0) && <p>Your bin is empty!</p>}
+        (!binFiles || binFiles.total === 0) && (
+          <p className="text-center">Your bin is empty!</p>
+        )}
     </div>
   );
 };

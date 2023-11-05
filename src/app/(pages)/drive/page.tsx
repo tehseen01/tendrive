@@ -41,8 +41,12 @@ const Drive = () => {
       {(foldersData && foldersData.total !== 0) ||
       (filesData && filesData.total !== 0) ? (
         <>
-          {foldersData && <Folders data={foldersData} />}
-          {filesData && <Files filesData={filesData} />}
+          {foldersData && foldersData.total !== 0 && (
+            <Folders data={foldersData} />
+          )}
+          {filesData && filesData.total !== 0 && (
+            <Files filesData={filesData} />
+          )}
         </>
       ) : (
         <InitialPage />
