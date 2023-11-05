@@ -1,6 +1,7 @@
 import conf from "@/lib/conf";
 import { TCreateDoc } from "@/lib/types";
 import { Client, Databases, ID, Query } from "appwrite";
+import storageService from "./storageService";
 
 type TGetDocs = { userId: string; collectionId: string };
 type TGetChildDocs = { parentId: string; userId: string; collectionId: string };
@@ -177,6 +178,45 @@ class Services {
     }
   }
 
+  async emptyBin(userId: string) {
+    try {
+      const folders = await this.getAllBinDocs({
+        userId,
+        collectionId: conf.appwriteFolderCollectionId,
+      });
+
+      const files = await this.getAllBinDocs({
+        userId,
+        collectionId: conf.appwriteFileCollectionId,
+      });
+
+      if (folders.total !== 0) {
+        const promises = folders.documents.map(async (folder) => {
+          return await this.deleteDocForever({
+            docId: folder.$id,
+            collectionId: conf.appwriteFolderCollectionId,
+          });
+        });
+
+        await Promise.all(promises);
+      }
+
+      if (files.total !== 0) {
+        const promises = files.documents.map(async (file) => {
+          await this.deleteDocForever({
+            docId: file.$id,
+            collectionId: conf.appwriteFileCollectionId,
+          });
+          return await storageService.deleteFile({ fileId: file.$id });
+        });
+
+        await Promise.all(promises);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createShareDoc({ docId, shareWithId }: CreateShareDoc) {
     try {
       const share = await this.database.createDocument(
@@ -242,7 +282,6 @@ class Services {
           Query.equal("userId", userId),
           Query.search("name", query),
           Query.notEqual("isDeleted", true),
-          Query.isNull("parentId"),
         ]
       );
 

@@ -45,12 +45,15 @@ const fileSlice = createSlice({
     },
 
     updateFileInfo: (state, action) => {
-      let file = state.fileInfo!;
+      let file = state.filesData;
+      if (file) {
+        let index = file.documents.findIndex(
+          (i) => i.$id === action.payload.$id
+        );
 
-      let index = file.findIndex((i) => i.$id === action.payload.$id);
-
-      if (index && index !== -1) {
-        file.splice(index, 1, action.payload);
+        if (index !== -1) {
+          file.documents.splice(index, 1, action.payload);
+        }
       }
     },
 

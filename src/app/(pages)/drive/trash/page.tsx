@@ -3,6 +3,8 @@
 import service from "@/appwrite/services";
 import Files from "@/components/Files";
 import Folders from "@/components/Folders";
+import EmptyBin from "@/components/dialog/EmptyBin";
+import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import conf from "@/lib/conf";
 import { setBinFiles } from "@/redux/fileSlice";
@@ -37,13 +39,24 @@ const TrashPage = () => {
   }, [user, dispatch]);
 
   return (
-    <div className="p-4">
-      {binFolders && binFolders.total !== 0 && <Folders data={binFolders} />}
-      {binFiles && binFiles.total !== 0 && <Files filesData={binFiles} />}
-      {(!binFolders || binFolders.total === 0) &&
-        (!binFiles || binFiles.total === 0) && (
-          <p className="text-center">Your bin is empty!</p>
-        )}
+    <div className="p-4 pb-24 overflow-y-auto h-full">
+      {(binFolders && binFolders.total !== 0) ||
+      (binFiles && binFiles.total !== 0) ? (
+        <>
+          <div className="flex items-center justify-between bg-gray-50 p-2 rounded-md">
+            <p>Items in the bin will be deleted forever</p>
+            <EmptyBin>
+              <Button variant={"ghost"}>Empty bin</Button>
+            </EmptyBin>
+          </div>
+          {binFolders && binFolders.total !== 0 && (
+            <Folders data={binFolders} />
+          )}
+          {binFiles && binFiles.total !== 0 && <Files filesData={binFiles} />}
+        </>
+      ) : (
+        <p className="text-center">Your bin is empty!</p>
+      )}
     </div>
   );
 };

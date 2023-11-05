@@ -21,6 +21,7 @@ import service from "@/appwrite/services";
 import { addFileToBin, removeFileFromBin } from "@/redux/fileSlice";
 import ShareDialog from "./dialog/ShareDialog";
 import { removeShareDoc } from "@/redux/commonSlice";
+import { AlertDialog, AlertDialogTrigger } from "./ui/alert-dialog";
 
 const FileFolderMoreOption = ({
   fileOrFolderData,
@@ -115,88 +116,98 @@ const FileFolderMoreOption = ({
   };
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <div className="w-6 h-6 p-0 hover:bg-white rounded-md flex items-center justify-center">
-            <Icon name="more-vertical" size={18} />
-          </div>
-        </DropdownMenuTrigger>
-        {pathname === "/drive/trash" ? (
-          <DropdownMenuContent className="w-60">
-            <DropdownMenuItem onClick={handleRestoreFromBin}>
-              <span className="mr-2">
-                <Icon name="history" size={18} />
-              </span>
-              <span>Restore</span>
-            </DropdownMenuItem>
-            <DialogTrigger asChild onClick={() => setDialogType("DELETE")}>
-              <DropdownMenuItem>
+    <AlertDialog>
+      <Dialog onOpenChange={setOpen} open={open}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="w-6 h-6 p-0 hover:bg-white rounded-md flex items-center justify-center">
+              <Icon name="more-vertical" size={18} />
+            </div>
+          </DropdownMenuTrigger>
+          {pathname === "/drive/trash" ? (
+            <DropdownMenuContent className="w-60">
+              <DropdownMenuItem onClick={handleRestoreFromBin}>
                 <span className="mr-2">
-                  <Icon name="trash" size={18} />
+                  <Icon name="history" size={18} />
                 </span>
-                <span>Delete forever</span>
+                <span>Restore</span>
               </DropdownMenuItem>
-            </DialogTrigger>
-          </DropdownMenuContent>
+              <AlertDialogTrigger
+                asChild
+                onClick={() => setDialogType("DELETE")}
+              >
+                <DropdownMenuItem>
+                  <span className="mr-2">
+                    <Icon name="trash" size={18} />
+                  </span>
+                  <span>Delete forever</span>
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuContent>
+          ) : (
+            <DropdownMenuContent className="w-60">
+              <DialogTrigger asChild onClick={() => setDialogType("RENAME")}>
+                <DropdownMenuItem
+                  disabled={pathname === "/drive/share-with-me"}
+                >
+                  <span className="mr-2">
+                    <Icon name="pen-line" size={18} />
+                  </span>
+                  <span>Rename</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
+                <DropdownMenuItem>
+                  <span className="mr-2">
+                    <Icon name="download" size={18} />
+                  </span>
+                  <span>Download</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
+                <DropdownMenuItem>
+                  <span className="mr-2">
+                    <Icon name="share" size={18} />
+                  </span>
+                  <span>Share</span>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              {pathname === "/drive/share-with-me" ? (
+                <DropdownMenuItem
+                  onClick={handleRemoveShareDoc}
+                  className="cursor-pointer"
+                >
+                  <span className="mr-2">
+                    <Icon name="trash" size={18} />
+                  </span>
+                  <span>Remove</span>
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={handleMoveToBin}
+                  className="cursor-pointer"
+                >
+                  <span className="mr-2">
+                    <Icon name="trash" size={18} />
+                  </span>
+                  <span>Move to bin</span>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          )}
+        </DropdownMenu>
+        {dialogType === "DELETE" ? (
+          <DeleteForeverDialog
+            deleteData={fileOrFolderData}
+            setOpen={setOpen}
+          />
+        ) : dialogType === "SHARE" ? (
+          <ShareDialog shareData={fileOrFolderData} setOpen={setOpen} />
         ) : (
-          <DropdownMenuContent className="w-60">
-            <DialogTrigger asChild onClick={() => setDialogType("RENAME")}>
-              <DropdownMenuItem disabled={pathname === "/drive/share-with-me"}>
-                <span className="mr-2">
-                  <Icon name="pen-line" size={18} />
-                </span>
-                <span>Rename</span>
-              </DropdownMenuItem>
-            </DialogTrigger>
-            <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
-              <DropdownMenuItem>
-                <span className="mr-2">
-                  <Icon name="download" size={18} />
-                </span>
-                <span>Download</span>
-              </DropdownMenuItem>
-            </DialogTrigger>
-            <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
-              <DropdownMenuItem>
-                <span className="mr-2">
-                  <Icon name="share" size={18} />
-                </span>
-                <span>Share</span>
-              </DropdownMenuItem>
-            </DialogTrigger>
-            {pathname === "/drive/share-with-me" ? (
-              <DropdownMenuItem
-                onClick={handleRemoveShareDoc}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">
-                  <Icon name="trash" size={18} />
-                </span>
-                <span>Remove</span>
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem
-                onClick={handleMoveToBin}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">
-                  <Icon name="trash" size={18} />
-                </span>
-                <span>Move to bin</span>
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
+          <RenameDialog renameData={fileOrFolderData} setOpen={setOpen} />
         )}
-      </DropdownMenu>
-      {dialogType === "DELETE" ? (
-        <DeleteForeverDialog deleteData={fileOrFolderData} setOpen={setOpen} />
-      ) : dialogType === "SHARE" ? (
-        <ShareDialog shareData={fileOrFolderData} setOpen={setOpen} />
-      ) : (
-        <RenameDialog renameData={fileOrFolderData} setOpen={setOpen} />
-      )}
-    </Dialog>
+      </Dialog>
+    </AlertDialog>
   );
 };
 

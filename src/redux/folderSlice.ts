@@ -37,14 +37,16 @@ const folderSlice = createSlice({
     },
 
     updateFolder: (state, action) => {
-      let folders = state.foldersData?.documents!;
+      let folders = state.foldersData;
 
-      let index = folders.findIndex(
-        (folder) => folder.$id === action.payload.$id
-      );
+      if (folders) {
+        let index = folders.documents.findIndex(
+          (folder) => folder.$id === action.payload.$id
+        );
 
-      if (index && index !== -1) {
-        folders.splice(index, 1, action.payload);
+        if (index !== -1) {
+          folders.documents.splice(index, 1, action.payload);
+        }
       }
     },
 
