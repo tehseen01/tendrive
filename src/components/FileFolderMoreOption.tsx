@@ -158,18 +158,23 @@ const FileFolderMoreOption = ({
                 </DropdownMenuItem>
               </DialogTrigger>
 
-              <DropdownMenuItem>
-                <a
-                  href={storageService.downloadFile(fileOrFolderData.$id).href}
-                  download
-                  className="flex items-center"
-                >
-                  <span className="mr-2">
-                    <Icon name="download" size={18} />
-                  </span>
-                  <span>Download</span>
-                </a>
-              </DropdownMenuItem>
+              {fileOrFolderData.$collectionId ===
+                conf.appwriteFileCollectionId && (
+                <DropdownMenuItem>
+                  <a
+                    href={
+                      storageService.downloadFile(fileOrFolderData.$id).href
+                    }
+                    download
+                    className="flex items-center"
+                  >
+                    <span className="mr-2">
+                      <Icon name="download" size={18} />
+                    </span>
+                    <span>Download</span>
+                  </a>
+                </DropdownMenuItem>
+              )}
 
               <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
                 <DropdownMenuItem>
