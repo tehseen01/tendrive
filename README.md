@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TenDrive - A Google Drive-like web app 🚀
 
-## Getting Started
+TenDrive is a Google Drive-like web app where users can create folders, upload files, preview, rename, move to bin, search file or folder, share file or folder, and download file.
 
-First, run the development server:
+## Demo
+
+You can try out the live demo of the app here: [ten-drive](https://ten-drive.vercel.app)
+
+## Features
+
+- User authentication using Appwrite
+- Folder creation and navigation
+- File upload and preview
+- File and folder rename and delete
+- File and folder search and share
+- File download
+- Responsive design
+
+## Technologies
+
+The app is built using the following technologies:
+
+- [Next.js](https://nextjs.org/) - A React framework for building hybrid applications
+- [TypeScript](https://www.typescriptlang.org/) - A superset of JavaScript that adds static types
+- [ui.shadcn.com](https://ui.shadcn.com/) - A UI component library for React
+- [Redux Toolkit](https://redux-toolkit.js.org/) - A toolkit for managing application state
+- [TailwindCSS](https://tailwindcss.com/) - A utility-first CSS framework
+- [Appwrite](https://appwrite.io/) - An open-source, self-hosted backend as a service
+
+## Installation
+
+To run the app locally, you need to have [Node.js](https://nodejs.org/en/) and [pnpm](https://pnpm.io/installation) installed on your machine.
+
+1. Clone this repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/tehseen01/tendrive.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install the dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd tendrive
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. Create a `.env.local` file in the root directory and add the following variables:
 
-## Learn More
+```bash
+NEXT_PUBLIC_APPWRITE_URL= # Your Appwrite endpoint
+NEXT_PUBLIC_APPWRITE_PROJECT_ID= # Your Appwrite project ID
+NEXT_PUBLIC_APPWRITE_DATABASE_ID= # Your Appwrite database ID
+NEXT_PUBLIC_APPWRITE_FOLDER_COLLECTION_ID= # Your Appwrite collection ID for folders
+NEXT_PUBLIC_APPWRITE_BUCKET_ID= # Your Appwrite bucket ID for storing files
+NEXT_PUBLIC_APPWRITE_USER_COLLECTION_ID= # Your Appwrite collection ID for users
+NEXT_PUBLIC_APPWRITE_FILE_COLLECTION_ID= # Your Appwrite collection ID for files
+NEXT_PUBLIC_APPWRITE_SHARE_COLLECTION_ID= # Your Appwrite collection ID for shares 
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Start the development server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
-## Deploy on Vercel
+## Acknowledgements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+I would like to thank [Hitesh Choudhary](https://www.youtube.com/channel/UCXgGY0wkgOzynnHvSEVmE3A) for his amazing tutorials on Appwrite. He helped me to learn how to use Appwrite and integrate it with Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Feedback
+We'd love to hear your feedback and suggestions on how we can enhance TenDrive. Please feel free to reach out with any questions or comments.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
