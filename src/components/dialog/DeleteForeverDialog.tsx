@@ -64,8 +64,12 @@ const DeleteForeverDialog = ({
       <AlertDialogHeader>
         <AlertDialogTitle>Delete Forever?</AlertDialogTitle>
         <AlertDialogDescription>
-          &apos;{deleteData.name}&apos; will be deleted forever and you
-          won&apos;t be able to restore it.
+          &apos;
+          {deleteData.name.length > 15
+            ? deleteData.name.slice(0, 15) + "..."
+            : deleteData.name}
+          &apos; will be deleted forever and you won&apos;t be able to restore
+          it.
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>

@@ -15,7 +15,13 @@ const ViewFile = () => {
   const dispatch = useAppDispatch();
   const { viewFileData } = useAppSelector((state) => state.file);
 
-  const handlePrint = () => {};
+  const handlePrint = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (viewFileData) {
+      const URL = storageService.getFileView({ fileId: viewFileData.$id }).href;
+      window.open(URL, "_blank");
+    }
+  };
 
   const handleZoomIn = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

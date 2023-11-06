@@ -57,13 +57,7 @@ const RenameDialog = ({ renameData, setOpen }: TRenameDialogProp) => {
           collectionId: conf.appwriteFileCollectionId,
         });
 
-        if (renamedFile) {
-          const renamedFileData = await storageService.updateFile({
-            fileId: renamedFile.$id,
-            name: renamedFile.name,
-          });
-          if (renamedFileData) dispatch(updateFileInfo(renamedFileData));
-        }
+        if (renamedFile) dispatch(updateFileInfo(renamedFile));
       }
       setOpen(false);
       toast({

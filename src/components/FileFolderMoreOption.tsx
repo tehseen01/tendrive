@@ -22,6 +22,7 @@ import { addFileToBin, removeFileFromBin } from "@/redux/fileSlice";
 import ShareDialog from "./dialog/ShareDialog";
 import { removeShareDoc } from "@/redux/commonSlice";
 import { AlertDialog, AlertDialogTrigger } from "./ui/alert-dialog";
+import storageService from "@/appwrite/storageService";
 
 const FileFolderMoreOption = ({
   fileOrFolderData,
@@ -156,14 +157,20 @@ const FileFolderMoreOption = ({
                   <span>Rename</span>
                 </DropdownMenuItem>
               </DialogTrigger>
-              <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
-                <DropdownMenuItem>
+
+              <DropdownMenuItem>
+                <a
+                  href={storageService.downloadFile(fileOrFolderData.$id).href}
+                  download
+                  className="flex items-center"
+                >
                   <span className="mr-2">
                     <Icon name="download" size={18} />
                   </span>
                   <span>Download</span>
-                </DropdownMenuItem>
-              </DialogTrigger>
+                </a>
+              </DropdownMenuItem>
+
               <DialogTrigger asChild onClick={() => setDialogType("SHARE")}>
                 <DropdownMenuItem>
                   <span className="mr-2">

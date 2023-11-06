@@ -67,7 +67,13 @@ const Files = ({ filesData }: { filesData: TFiles }) => {
               </div>
               <figure className="w-full aspect-square p-2">
                 <Image
-                  src={storageService.getFilePreview({ fileId: file.$id }).href}
+                  src={
+                    info?.mimeType.endsWith("pdf")
+                      ? "/pdf.png"
+                      : info?.mimeType.startsWith("image")
+                      ? storageService.getFilePreview({ fileId: file.$id }).href
+                      : "/file.png"
+                  }
                   width={100}
                   height={100}
                   alt="image"
