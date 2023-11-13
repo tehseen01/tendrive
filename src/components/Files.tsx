@@ -36,6 +36,9 @@ const Files = ({ filesData }: { filesData: TFiles }) => {
       } else if (info.mimeType.startsWith("image")) {
         dispatch(setOpenFile(true));
         dispatch(setViewFileData(info));
+      } else if (info.mimeType.startsWith("video")) {
+        const url = storageService.getFileView({ fileId: info.$id });
+        window.open(url.href, "_blank");
       } else {
         const downloadURL = storageService.downloadFile(info.$id).href;
         window.open(downloadURL);
